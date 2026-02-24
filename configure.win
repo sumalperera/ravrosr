@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Windows configure script for ravrosr
+
+CARGO_BIN="$(command -v cargo)"
+RUSTC_BIN="$(command -v rustc)"
+
+if [ -z "$CARGO_BIN" ] || [ -z "$RUSTC_BIN" ]; then
+  if [ -f "${USERPROFILE}/.cargo/bin/cargo.exe" ]; then
+    CARGO_BIN="${USERPROFILE}/.cargo/bin/cargo.exe"
+    RUSTC_BIN="${USERPROFILE}/.cargo/bin/rustc.exe"
+  else
+    echo "-----"
+    echo "Could not find the Rust compiler (rustc) or Cargo build tool."
+    echo "Visit https://www.rust-lang.org/tools/install to install Rust."
+    echo "-----"
+    exit 1
+  fi
+fi
+
+echo "Using Rust compiler: $RUSTC_BIN"
+echo "Using Cargo: $CARGO_BIN"
+
+exit 0

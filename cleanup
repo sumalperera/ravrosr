@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Clean up Rust build artifacts after R CMD INSTALL
+rm -rf src/rust/target

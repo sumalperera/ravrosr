@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+
+# Anticonf (tm) script for ravrosr
+# This script ensures that the Rust toolchain is available
+# and meets the minimum version requirements for CRAN builds.
+
+RUST_MIN_VER="1.67.0"
+
+errormsg () {
+  echo "
+-----
+Could not find the Rust compiler (rustc) or Cargo build tool.
+Both are required to compile this package.
+
+To install Rust, visit: https://www.rust-lang.org/tools/install
+Or run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+After installing, make sure rustc and cargo are in your PATH.
+-----
+"
+}
+
+# Look for cargo and rustc
+CARGO_BIN="$(command -v cargo)"
+RUSTC_BIN="$(command -v rustc)"
+
+if [ -z "$CARGO_BIN" ] || [ -z "$RUSTC_BIN" ]; then
+  # Try common installation paths
+  if [ -f "$HOME/.cargo/bin/cargo" ]; then
+    CARGO_BIN="$HOME/.cargo/bin/cargo"
+    RUSTC_BIN="$HOME/.cargo/bin/rustc"
+  else
+    errormsg
+    exit 1
+  fi
+fi
+
+# Check Rust version
+RUST_VER="$("$RUSTC_BIN" --version | sed 's/rustc \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')"
+RUST_VER_MAJOR="$(echo "$RUST_VER" | cut -d. -f1)"
+RUST_VER_MINOR="$(echo "$RUST_VER" | cut -d. -f2)"
+RUST_MIN_MAJOR="$(echo "$RUST_MIN_VER" | cut -d. -f1)"
+RUST_MIN_MINOR="$(echo "$RUST_MIN_VER" | cut -d. -f2)"
+
+if [ "$RUST_VER_MAJOR" -lt "$RUST_MIN_MAJOR" ] || \
+   { [ "$RUST_VER_MAJOR" -eq "$RUST_MIN_MAJOR" ] && [ "$RUST_VER_MINOR" -lt "$RUST_MIN_MINOR" ]; }; then
+  echo "-----"
+  echo "Rust version $RUST_VER found, but version >= $RUST_MIN_VER is required."
+  echo "Please update Rust: rustup update stable"
+  echo "-----"
+  exit 1
+fi
+
+echo "Using Rust compiler: $RUSTC_BIN (version $RUST_VER)"
+echo "Using Cargo: $CARGO_BIN"
+
+exit 0

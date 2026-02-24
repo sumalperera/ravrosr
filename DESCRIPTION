@@ -1,0 +1,20 @@
+Package: ravrosr
+Title: Confluent Schema Registry Integration and Avro Serialization for R
+Version: 0.1.0
+Authors@R: person("Sumal", "Perera", role = c("aut", "cre"), email = "dragon.fly.2026@proton.me")
+Description: Provides Confluent Schema Registry integration and Avro
+    serialization/deserialization for R. The Rust backend (via extendr) handles
+    async HTTP communication with Schema Registry, Avro binary encoding/decoding,
+    and type conversions between R and Avro. Supports Confluent Cloud
+    authentication via API key/secret.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.2)
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+SystemRequirements: Cargo (Rust's package manager), rustc (>= 1.67)
+Config/rextendr/version: 0.3.1
+Biarch: true
+NeedsCompilation: yes

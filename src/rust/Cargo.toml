@@ -1,0 +1,17 @@
+[package]
+name = "ravrosr"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+extendr-api = "0.7"
+apache-avro = "0.17"
+schema_registry_converter = { version = "4.7", features = ["easy", "avro"] }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"] }
+once_cell = "1"
+base64 = "0.22"

@@ -1,0 +1,12 @@
+cargo:rustc-env=R_HOME=/Library/Frameworks/R.framework/Resources
+cargo:r_home=/Library/Frameworks/R.framework/Resources
+cargo:rustc-link-search=/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib
+cargo:rustc-link-lib=dylib=R
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-changed=wrapper.h
+cargo:r_version_major=4
+cargo:r_version_minor=5
+cargo:r_version_patch=2
+cargo:r_version_devel=false
+cargo:warning=using generic macos-aarch64 libR-sys bindings. These may not work for R 4.5.2false.
+cargo:rerun-if-changed=bindings/bindings-macos-aarch64.rs

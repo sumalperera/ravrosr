@@ -1,0 +1,11 @@
+/target
+src/rust/target
+src/*.o
+src/*.so
+src/*.dll
+src/ravrosr-win.def
+.Rproj.user
+*.Rproj
+.Rhistory
+.RData
+.Rcheck
