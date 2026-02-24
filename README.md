@@ -9,10 +9,14 @@ Works with **Confluent Schema Registry**, **Redpanda**, and any API-compatible r
 ## Installation
 
 Requires a [Rust toolchain](https://www.rust-lang.org/tools/install) (rustc >= 1.67, cargo).
+`ravrosr` is not on CRAN yet.
 
 ```r
-# Install from source
-install.packages("ravrosr", repos = NULL, type = "source")
+# Install from GitHub
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+remotes::install_git("https://github.com/sumalperera/ravrosr")
 ```
 
 ## Quick Start

@@ -8,10 +8,10 @@ crate-type = ["staticlib"]
 
 [dependencies]
 extendr-api = "0.7"
-apache-avro = "0.17"
-schema_registry_converter = { version = "4.7", features = ["easy", "avro"] }
-tokio = { version = "1", features = ["full"] }
+apache-avro = "0.21"
+schema_registry_converter = { version = "4.7", default-features = false, features = ["easy", "avro", "futures", "native_tls"] }
+tokio = { version = "1", features = ["rt-multi-thread"] }
 serde_json = "1"
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "native-tls"] }
 once_cell = "1"
 base64 = "0.22"
