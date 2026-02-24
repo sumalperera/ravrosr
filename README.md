@@ -2,26 +2,40 @@
 
 ![ravrosr logo](branding/ravrosr_logo_1200x400.png)
 
-Confluent Schema Registry integration and Avro serialization/deserialization for R, powered by Rust via [extendr](https://extendr.github.io/).
+`ravrosr` brings Avro serialization and Schema Registry support to R, with a Rust backend via [extendr](https://extendr.github.io/).
 
-Works with **Confluent Schema Registry**, **Redpanda**, and any API-compatible registry.
+It supports Confluent Schema Registry, Redpanda, and other API-compatible registries.
+
+## What this package does
+
+- Serialize and deserialize Avro data locally (no registry required)
+- Serialize and deserialize Confluent wire-format payloads (`0x00 + schema_id + avro`)
+- Connect to Schema Registry and manage subjects/schemas from R
+
+## Requirements
+
+- R `>= 4.2`
+- [Rust toolchain](https://www.rust-lang.org/tools/install) (`rustc >= 1.67`, `cargo`)
+- Build tools:
+  - macOS uses Xcode Command Line Tools (`xcode-select --install`)
+  - Windows uses Rtools
+  - Linux uses a standard C/C++ build toolchain (`build-essential` or equivalent)
+
+`ravrosr` is currently not on CRAN.
 
 ## Installation
 
-Requires a [Rust toolchain](https://www.rust-lang.org/tools/install) (rustc >= 1.67, cargo).
-`ravrosr` is not on CRAN yet.
-
 ```r
-# Install from GitHub
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
+
 remotes::install_git("https://github.com/sumalperera/ravrosr")
 ```
 
-## Quick Start
+## Quick start
 
-### Local Avro (no registry)
+### 1) Local Avro (no registry)
 
 ```r
 library(ravrosr)
@@ -31,101 +45,127 @@ schema <- '{
   "name": "User",
   "fields": [
     {"name": "name", "type": "string"},
-    {"name": "age",  "type": "int"},
-    {"name": "score","type": "double"}
+    {"name": "age", "type": "int"},
+    {"name": "score", "type": "double"}
   ]
 }'
 
-data <- list(name = "Alice", age = 30L, score = 95.5)
+payload <- list(name = "Alice", age = 30L, score = 95.5)
 
-# Serialize to Avro binary
-raw_bytes <- avro_serialize_local(schema, data)
+raw_bytes <- avro_serialize_local(schema, payload)
+decoded <- avro_deserialize_local(schema, raw_bytes)
 
-# Deserialize back to R list
-result <- avro_deserialize_local(schema, raw_bytes)
-result$name
+decoded$name
 #> [1] "Alice"
 ```
 
-### With Schema Registry
+### 2) Schema Registry workflow
 
 ```r
-# Connect (Confluent Cloud)
-client <- sr_connect(
-  url        = "https://your-registry.confluent.cloud",
-  api_key    = "YOUR_API_KEY",
-  api_secret = "YOUR_API_SECRET"
-)
+library(ravrosr)
 
-# Connect (Redpanda / local, no auth)
+schema <- '{
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"}
+  ]
+}'
+
+payload <- list(name = "Bob", age = 42L)
+
+# Use one connection style:
+
+# Local/Redpanda (no auth)
 client <- sr_connect("http://localhost:8081")
 
-# Register a schema
+# Confluent Cloud (API key + secret)
+# client <- sr_connect(
+#   url = "https://<your-registry-endpoint>",
+#   api_key = Sys.getenv("SR_API_KEY"),
+#   api_secret = Sys.getenv("SR_API_SECRET")
+# )
+
 schema_id <- sr_register_schema(client, "user-value", schema)
-
-# Serialize with Confluent wire format (0x00 + schema ID + Avro)
-raw <- avro_serialize(client, "user-value", data)
-
-# Deserialize (schema is fetched from registry automatically)
-result <- avro_deserialize(client, raw)
+wire_bytes <- avro_serialize(client, "user-value", payload)
+decoded <- avro_deserialize(client, wire_bytes)
 ```
 
-## API Reference
+## Common Schema Registry operations
+
+```r
+# List all subjects
+sr_list_subjects(client)
+
+# Fetch latest schema for a subject
+sr_get_schema(client, "user-value")
+
+# Fetch a specific version
+sr_get_schema(client, "user-value", version = 1)
+
+# Fetch schema by global schema ID
+sr_get_schema_by_id(client, id = schema_id)
+
+# Check compatibility before registering
+sr_check_compatibility(client, "user-value", schema)
+
+# Delete a subject
+sr_delete_subject(client, "user-value")
+```
+
+## API reference
 
 | Function | Description |
 |---|---|
-| `sr_connect(url, api_key, api_secret)` | Create a registry client |
-| `sr_list_subjects(client)` | List all subjects |
-| `sr_get_schema(client, subject, version)` | Get schema JSON (NULL = latest) |
-| `sr_register_schema(client, subject, schema_json)` | Register schema, returns ID |
-| `sr_check_compatibility(client, subject, schema_json)` | Check schema compatibility |
-| `sr_delete_subject(client, subject)` | Delete a subject |
-| `avro_serialize(client, subject, data)` | Serialize with wire format |
-| `avro_deserialize(client, raw_bytes)` | Deserialize wire format |
-| `avro_serialize_local(schema_json, data)` | Serialize without registry |
-| `avro_deserialize_local(schema_json, raw_bytes)` | Deserialize without registry |
+| `sr_connect(url, api_key, api_secret)` | Create a Schema Registry client |
+| `sr_list_subjects(client)` | List subjects |
+| `sr_get_schema(client, subject, version)` | Get schema JSON (`NULL` = latest) |
+| `sr_get_schema_by_id(client, id)` | Get schema JSON by global ID |
+| `sr_register_schema(client, subject, schema_json)` | Register schema and return ID |
+| `sr_check_compatibility(client, subject, schema_json)` | Check compatibility |
+| `sr_delete_subject(client, subject)` | Delete subject |
+| `avro_serialize(client, subject, data)` | Serialize using Confluent wire format |
+| `avro_deserialize(client, raw_bytes)` | Deserialize Confluent wire format |
+| `avro_serialize_local(schema_json, data)` | Serialize Avro without registry |
+| `avro_deserialize_local(schema_json, raw_bytes)` | Deserialize Avro without registry |
 
-## Supported Avro Types
+## Avro type mapping
 
-| Avro Type | R Type |
+| Avro type | R type |
 |---|---|
-| null | `NULL` |
-| boolean | `logical` |
-| int | `integer` |
-| long | `double` (R has no native i64) |
-| float | `double` |
-| double | `double` |
-| string | `character` |
-| bytes | `raw` |
-| record | named `list` |
-| array | `list` |
-| map | named `list` |
-| enum | `character` |
-| union | auto-matched |
-| fixed | `raw` |
+| `null` | `NULL` |
+| `boolean` | `logical` |
+| `int` | `integer` |
+| `long` | `double` (R has no native 64-bit integer scalar) |
+| `float` | `double` |
+| `double` | `double` |
+| `string` | `character` |
+| `bytes` | `raw` |
+| `record` | named `list` |
+| `array` | `list` |
+| `map` | named `list` |
+| `enum` | `character` |
+| `union` | auto-matched |
+| `fixed` | `raw` |
+
+## Troubleshooting
+
+- Rust not found during install: confirm `rustc --version` and `cargo --version` work in the same shell used by R.
+- Build failures on macOS: run `xcode-select --install`.
+- Authentication errors with Confluent Cloud: verify endpoint URL, API key/secret, and network access to the registry endpoint.
 
 ## Branding
 
-Primary logo and icon files are available in [`branding/`](branding/).
+Brand assets are in [`branding/`](branding/):
 
-### Logo files
-
-- [`branding/ravrosr_logo.svg`](branding/ravrosr_logo.svg) - editable vector primary logo
-- [`branding/ravrosr_logo_1800x600.png`](branding/ravrosr_logo_1800x600.png) - high-res primary logo
-- [`branding/ravrosr_logo_1200x400.png`](branding/ravrosr_logo_1200x400.png) - README/social size primary logo
-
-### Icon files
-
-- [`branding/ravrosr_icon.svg`](branding/ravrosr_icon.svg) - editable vector icon
-- [`branding/ravrosr_icon_1024.png`](branding/ravrosr_icon_1024.png) - app/store icon size
-- [`branding/ravrosr_icon_512.png`](branding/ravrosr_icon_512.png) - medium icon size
-- [`branding/ravrosr_icon_256.png`](branding/ravrosr_icon_256.png) - small icon size
-
-### Usage notes
-
-- Use the full logo (`ravrosr_logo_*`) for docs, README headers, and slides.
-- Use the icon (`ravrosr_icon_*`) for avatars, badges, or square placements.
-- Prefer SVG for print or further editing, and PNG for quick web use.
+- [`branding/ravrosr_logo.svg`](branding/ravrosr_logo.svg)
+- [`branding/ravrosr_logo_1800x600.png`](branding/ravrosr_logo_1800x600.png)
+- [`branding/ravrosr_logo_1200x400.png`](branding/ravrosr_logo_1200x400.png)
+- [`branding/ravrosr_icon.svg`](branding/ravrosr_icon.svg)
+- [`branding/ravrosr_icon_1024.png`](branding/ravrosr_icon_1024.png)
+- [`branding/ravrosr_icon_512.png`](branding/ravrosr_icon_512.png)
+- [`branding/ravrosr_icon_256.png`](branding/ravrosr_icon_256.png)
 
 ## License
 
