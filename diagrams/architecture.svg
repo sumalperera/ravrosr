@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="520" viewBox="0 0 1800 520" role="img" aria-labelledby="title desc">
+  <title id="title">ravrosr architecture overview</title>
+  <desc id="desc">Flow from R script through wrappers and Rust core to schema registry and Avro codec.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#214e78" />
+    </marker>
+    <style>
+      .box { fill:#f4f9ff; stroke:#2f5b84; stroke-width:2; rx:16; }
+      .core { fill:#e9f6ed; stroke:#2f7d4a; stroke-width:2; rx:16; }
+      .ext { fill:#fff3dc; stroke:#8f6a24; stroke-width:2; rx:16; }
+      .txt { font-family:Arial, Helvetica, sans-serif; font-size:28px; fill:#10263a; font-weight:600; }
+      .arrowline { stroke:#214e78; stroke-width:4; fill:none; marker-end:url(#arrow); }
+      .label { font-family:Arial, Helvetica, sans-serif; font-size:22px; fill:#1c3f5f; }
+      .title { font-family:Arial, Helvetica, sans-serif; font-size:36px; fill:#0e2740; font-weight:700; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="520" fill="#ffffff"/>
+  <text x="900" y="56" text-anchor="middle" class="title">ravrosr Architecture</text>
+
+  <rect x="60" y="180" width="240" height="110" class="box"/>
+  <text x="180" y="248" text-anchor="middle" class="txt">R Script</text>
+
+  <rect x="360" y="180" width="320" height="110" class="box"/>
+  <text x="520" y="248" text-anchor="middle" class="txt">ravrosr R Wrappers</text>
+
+  <rect x="740" y="180" width="260" height="110" class="ext"/>
+  <text x="870" y="248" text-anchor="middle" class="txt">extendr Bridge</text>
+
+  <rect x="1060" y="180" width="230" height="110" class="core"/>
+  <text x="1175" y="248" text-anchor="middle" class="txt">Rust Core</text>
+
+  <rect x="1370" y="90" width="360" height="110" class="box"/>
+  <text x="1550" y="158" text-anchor="middle" class="txt">Schema Registry API</text>
+
+  <rect x="1370" y="270" width="360" height="110" class="box"/>
+  <text x="1550" y="338" text-anchor="middle" class="txt">Avro Encoder / Decoder</text>
+
+  <path d="M300 235 L360 235" class="arrowline"/>
+  <path d="M680 235 L740 235" class="arrowline"/>
+  <path d="M1000 235 L1060 235" class="arrowline"/>
+  <path d="M1290 220 C1320 220,1335 190,1370 145" class="arrowline"/>
+  <path d="M1290 250 C1320 250,1335 290,1370 325" class="arrowline"/>
+
+  <text x="870" y="160" text-anchor="middle" class="label">Thin R interface, heavy work in Rust</text>
+</svg>

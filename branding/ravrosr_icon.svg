@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">ravrosr logo icon</title>
+  <desc id="desc">Circular gradient icon with stylised R monogram and schema braces.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2f7fbd"/>
+      <stop offset="52%" stop-color="#2b4f86"/>
+      <stop offset="100%" stop-color="#cd6b34"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#12233a" flood-opacity="0.28"/>
+    </filter>
+    <style>
+      .line { stroke:#ffffff; stroke-width:26; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .mono { stroke:#ffffff; stroke-width:68; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .dot { fill:#ffffff; }
+    </style>
+  </defs>
+
+  <circle cx="512" cy="512" r="468" fill="url(#bg)" filter="url(#shadow)"/>
+  <circle cx="512" cy="512" r="436" fill="none" stroke="#ffffff" stroke-opacity="0.42" stroke-width="14"/>
+
+  <path class="line" d="M278 284 C232 284 218 322 218 360 C218 412 262 426 262 476 C262 526 218 540 218 592 C218 634 234 672 278 672"/>
+  <path class="line" d="M746 284 C792 284 806 322 806 360 C806 412 762 426 762 476 C762 526 806 540 806 592 C806 634 790 672 746 672"/>
+
+  <g class="mono">
+    <line x1="424" y1="308" x2="424" y2="736"/>
+    <path d="M424 308 H576 C662 308 726 372 726 452 C726 532 662 596 576 596 H424"/>
+    <line x1="548" y1="596" x2="730" y2="742"/>
+  </g>
+
+  <path class="line" d="M334 742 H690"/>
+  <circle class="dot" cx="372" cy="742" r="12"/>
+  <circle class="dot" cx="512" cy="742" r="12"/>
+  <circle class="dot" cx="652" cy="742" r="12"/>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="980" viewBox="0 0 1800 980" role="img" aria-labelledby="title desc">
+  <title id="title">Schema registration and serialization flow</title>
+  <desc id="desc">Sequence of calls between R script, ravrosr, Rust core, and Schema Registry.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#214e78" />
+    </marker>
+    <style>
+      .title { font-family:Arial, Helvetica, sans-serif; font-size:36px; fill:#0e2740; font-weight:700; }
+      .lane { fill:#f7fbff; stroke:#9bb7d1; stroke-width:2; }
+      .head { font-family:Arial, Helvetica, sans-serif; font-size:24px; fill:#0f2c47; font-weight:700; }
+      .lifeline { stroke:#9bb7d1; stroke-width:2; stroke-dasharray:8 8; }
+      .msg { stroke:#214e78; stroke-width:3; fill:none; marker-end:url(#arrow); }
+      .txt { font-family:Arial, Helvetica, sans-serif; font-size:20px; fill:#163a59; }
+      .phase { font-family:Arial, Helvetica, sans-serif; font-size:22px; fill:#2c5c86; font-weight:700; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="980" fill="#ffffff"/>
+  <text x="900" y="50" text-anchor="middle" class="title">End-to-End Request Flow</text>
+
+  <rect x="80" y="90" width="340" height="70" class="lane"/>
+  <rect x="500" y="90" width="340" height="70" class="lane"/>
+  <rect x="920" y="90" width="340" height="70" class="lane"/>
+  <rect x="1340" y="90" width="340" height="70" class="lane"/>
+
+  <text x="250" y="135" text-anchor="middle" class="head">R Script</text>
+  <text x="670" y="135" text-anchor="middle" class="head">ravrosr</text>
+  <text x="1090" y="135" text-anchor="middle" class="head">Rust Core</text>
+  <text x="1510" y="135" text-anchor="middle" class="head">Schema Registry</text>
+
+  <line x1="250" y1="170" x2="250" y2="920" class="lifeline"/>
+  <line x1="670" y1="170" x2="670" y2="920" class="lifeline"/>
+  <line x1="1090" y1="170" x2="1090" y2="920" class="lifeline"/>
+  <line x1="1510" y1="170" x2="1510" y2="920" class="lifeline"/>
+
+  <text x="120" y="220" class="phase">Schema registration</text>
+
+  <line x1="250" y1="260" x2="670" y2="260" class="msg"/>
+  <text x="460" y="247" text-anchor="middle" class="txt">sr_register_schema(subject, schema)</text>
+
+  <line x1="670" y1="310" x2="1090" y2="310" class="msg"/>
+  <text x="880" y="297" text-anchor="middle" class="txt">Bridge call</text>
+
+  <line x1="1090" y1="360" x2="1510" y2="360" class="msg"/>
+  <text x="1300" y="347" text-anchor="middle" class="txt">POST /subjects/{subject}/versions</text>
+
+  <line x1="1510" y1="410" x2="1090" y2="410" class="msg"/>
+  <text x="1300" y="397" text-anchor="middle" class="txt">schema_id</text>
+
+  <line x1="1090" y1="460" x2="670" y2="460" class="msg"/>
+  <text x="880" y="447" text-anchor="middle" class="txt">Return ID</text>
+
+  <line x1="670" y1="510" x2="250" y2="510" class="msg"/>
+  <text x="460" y="497" text-anchor="middle" class="txt">Return ID to R</text>
+
+  <text x="120" y="590" class="phase">Payload serialization</text>
+
+  <line x1="250" y1="630" x2="670" y2="630" class="msg"/>
+  <text x="460" y="617" text-anchor="middle" class="txt">avro_serialize(client, subject, data)</text>
+
+  <line x1="670" y1="680" x2="1090" y2="680" class="msg"/>
+  <text x="880" y="667" text-anchor="middle" class="txt">Bridge call</text>
+
+  <line x1="1090" y1="730" x2="1510" y2="730" class="msg"/>
+  <text x="1300" y="717" text-anchor="middle" class="txt">GET latest schema</text>
+
+  <line x1="1510" y1="780" x2="1090" y2="780" class="msg"/>
+  <text x="1300" y="767" text-anchor="middle" class="txt">schema + ID</text>
+
+  <line x1="1090" y1="830" x2="670" y2="830" class="msg"/>
+  <text x="880" y="817" text-anchor="middle" class="txt">Wire-format bytes</text>
+
+  <line x1="670" y1="880" x2="250" y2="880" class="msg"/>
+  <text x="460" y="867" text-anchor="middle" class="txt">Raw payload</text>
+</svg>

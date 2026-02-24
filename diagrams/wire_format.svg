@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="420" viewBox="0 0 1800 420" role="img" aria-labelledby="title desc">
+  <title id="title">Confluent wire format layout</title>
+  <desc id="desc">Magic byte, schema id and avro payload sections.</desc>
+  <defs>
+    <style>
+      .title { font-family:Arial, Helvetica, sans-serif; font-size:36px; fill:#0e2740; font-weight:700; }
+      .lbl { font-family:Arial, Helvetica, sans-serif; font-size:30px; fill:#10263a; font-weight:700; }
+      .sub { font-family:Arial, Helvetica, sans-serif; font-size:22px; fill:#1b3f63; }
+      .outline { stroke:#214e78; stroke-width:3; fill:none; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="420" fill="#ffffff"/>
+  <text x="900" y="56" text-anchor="middle" class="title">Confluent Wire Format in ravrosr</text>
+
+  <rect x="120" y="140" width="160" height="130" fill="#ffe7d1" stroke="#a45d1b" stroke-width="3"/>
+  <text x="200" y="198" text-anchor="middle" class="lbl">0x00</text>
+  <text x="200" y="230" text-anchor="middle" class="sub">1 byte</text>
+
+  <rect x="280" y="140" width="420" height="130" fill="#e6f1ff" stroke="#2d5aa7" stroke-width="3"/>
+  <text x="490" y="198" text-anchor="middle" class="lbl">Schema ID</text>
+  <text x="490" y="230" text-anchor="middle" class="sub">4 bytes (big-endian)</text>
+
+  <rect x="700" y="140" width="980" height="130" fill="#e8f8eb" stroke="#2f7d4a" stroke-width="3"/>
+  <text x="1190" y="198" text-anchor="middle" class="lbl">Avro Binary Payload</text>
+  <text x="1190" y="230" text-anchor="middle" class="sub">remaining bytes</text>
+
+  <rect x="120" y="140" width="1560" height="130" class="outline"/>
+</svg>

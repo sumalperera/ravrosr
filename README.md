@@ -1,5 +1,7 @@
 # ravrosr
 
+![ravrosr logo](branding/ravrosr_logo_1200x400.png)
+
 Confluent Schema Registry integration and Avro serialization/deserialization for R, powered by Rust via [extendr](https://extendr.github.io/).
 
 Works with **Confluent Schema Registry**, **Redpanda**, and any API-compatible registry.
@@ -97,6 +99,29 @@ result <- avro_deserialize(client, raw)
 | enum | `character` |
 | union | auto-matched |
 | fixed | `raw` |
+
+## Branding
+
+Primary logo and icon files are available in [`branding/`](branding/).
+
+### Logo files
+
+- [`branding/ravrosr_logo.svg`](branding/ravrosr_logo.svg) - editable vector primary logo
+- [`branding/ravrosr_logo_1800x600.png`](branding/ravrosr_logo_1800x600.png) - high-res primary logo
+- [`branding/ravrosr_logo_1200x400.png`](branding/ravrosr_logo_1200x400.png) - README/social size primary logo
+
+### Icon files
+
+- [`branding/ravrosr_icon.svg`](branding/ravrosr_icon.svg) - editable vector icon
+- [`branding/ravrosr_icon_1024.png`](branding/ravrosr_icon_1024.png) - app/store icon size
+- [`branding/ravrosr_icon_512.png`](branding/ravrosr_icon_512.png) - medium icon size
+- [`branding/ravrosr_icon_256.png`](branding/ravrosr_icon_256.png) - small icon size
+
+### Usage notes
+
+- Use the full logo (`ravrosr_logo_*`) for docs, README headers, and slides.
+- Use the icon (`ravrosr_icon_*`) for avatars, badges, or square placements.
+- Prefer SVG for print or further editing, and PNG for quick web use.
 
 ## License
 
