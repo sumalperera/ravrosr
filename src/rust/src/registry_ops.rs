@@ -152,10 +152,35 @@ pub fn sr_delete_subject(client: Robj, subject: &str) -> bool {
     response.status().is_success()
 }
 
+/// Get schema JSON by its global numeric ID.
+#[extendr]
+pub fn sr_get_schema_by_id(client: Robj, id: i32) -> String {
+    let ptr: ExternalPtr<SrClient> = client.try_into()
+        .expect("Expected a Schema Registry client (created with sr_connect)");
+    let url = format!("{}/schemas/ids/{}", ptr.base_url, id);
+    let http_client = reqwest::Client::new();
+
+    let response = TOKIO_RT.block_on(async {
+        let mut req = http_client.get(&url);
+        if let Some(ref auth) = ptr.auth_header {
+            req = req.header("Authorization", auth);
+        }
+        req.send().await
+            .expect("HTTP request failed")
+            .json::<serde_json::Value>().await
+            .expect("Failed to parse response")
+    });
+
+    response["schema"].as_str()
+        .expect("No 'schema' field in response")
+        .to_string()
+}
+
 extendr_module! {
     mod registry_ops;
     fn sr_list_subjects;
     fn sr_get_schema;
+    fn sr_get_schema_by_id;
     fn sr_register_schema;
     fn sr_check_compatibility;
     fn sr_delete_subject;

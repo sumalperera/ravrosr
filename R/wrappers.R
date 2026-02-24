@@ -29,6 +29,16 @@ sr_get_schema <- function(client, subject, version = NULL) {
   .Call(wrap__sr_get_schema, client, subject, version)
 }
 
+#' Get schema JSON by global ID
+#'
+#' @param client A Schema Registry client created with \code{sr_connect}
+#' @param id The global schema ID (integer, as returned by \code{sr_register_schema})
+#' @return A string containing the schema JSON
+#' @export
+sr_get_schema_by_id <- function(client, id) {
+  .Call(wrap__sr_get_schema_by_id, client, id)
+}
+
 #' Register a schema under a subject
 #'
 #' @param client A Schema Registry client created with \code{sr_connect}
