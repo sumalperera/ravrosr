@@ -1,8 +1,6 @@
 # ravrosr
 
-![ravrosr logo](branding/ravrosr_logo_1200x400.png)
-
-`ravrosr` brings Avro serialization and Schema Registry support to R, with a Rust backend via [extendr](https://extendr.github.io/).
+`ravrosr` brings Avro serialization and Schema Registry support to R, with a Rust backend via [extendr](https://extendr.rs/).
 
 It supports Confluent Schema Registry, Redpanda, and other API-compatible registries.
 
@@ -15,7 +13,7 @@ It supports Confluent Schema Registry, Redpanda, and other API-compatible regist
 ## Requirements
 
 - R `>= 4.2`
-- [Rust toolchain](https://www.rust-lang.org/tools/install) (`rustc >= 1.67`, `cargo`)
+- [Rust toolchain](https://rust-lang.org/tools/install/) (`rustc >= 1.67`, `cargo`)
 - Build tools:
   - macOS uses Xcode Command Line Tools (`xcode-select --install`)
   - Windows uses Rtools
@@ -154,18 +152,6 @@ sr_delete_subject(client, "user-value")
 - Rust not found during install: confirm `rustc --version` and `cargo --version` work in the same shell used by R.
 - Build failures on macOS: run `xcode-select --install`.
 - Authentication errors with Confluent Cloud: verify endpoint URL, API key/secret, and network access to the registry endpoint.
-
-## Branding
-
-Brand assets are in [`branding/`](branding/):
-
-- [`branding/ravrosr_logo.svg`](branding/ravrosr_logo.svg)
-- [`branding/ravrosr_logo_1800x600.png`](branding/ravrosr_logo_1800x600.png)
-- [`branding/ravrosr_logo_1200x400.png`](branding/ravrosr_logo_1200x400.png)
-- [`branding/ravrosr_icon.svg`](branding/ravrosr_icon.svg)
-- [`branding/ravrosr_icon_1024.png`](branding/ravrosr_icon_1024.png)
-- [`branding/ravrosr_icon_512.png`](branding/ravrosr_icon_512.png)
-- [`branding/ravrosr_icon_256.png`](branding/ravrosr_icon_256.png)
 
 ## License
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 
 # Anticonf (tm) script for ravrosr
-# This script ensures that the Rust toolchain is available
-# and meets the minimum version requirements for CRAN builds.
+# This script ensures that the Rust toolchain is available,
+# meets the minimum version requirements, and generates
+# platform-specific Makevars for CRAN builds.
 
 RUST_MIN_VER="1.67.0"
 
@@ -12,7 +13,7 @@ errormsg () {
 Could not find the Rust compiler (rustc) or Cargo build tool.
 Both are required to compile this package.
 
-To install Rust, visit: https://www.rust-lang.org/tools/install
+To install Rust, visit: https://rust-lang.org/tools/install/
 Or run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 After installing, make sure rustc and cargo are in your PATH.
@@ -53,5 +54,23 @@ fi
 
 echo "Using Rust compiler: $RUSTC_BIN (version $RUST_VER)"
 echo "Using Cargo: $CARGO_BIN"
+
+# Detect OS and set platform-specific linker flags
+case "$(uname -s)" in
+  Darwin)
+    ADDITIONAL_PKG_LIBS="-lresolv -framework Security -framework SystemConfiguration"
+    ;;
+  Linux)
+    ADDITIONAL_PKG_LIBS="-lssl -lcrypto -lresolv"
+    ;;
+  *)
+    ADDITIONAL_PKG_LIBS="-lssl -lcrypto"
+    ;;
+esac
+
+echo "Platform: $(uname -s), using additional libs: $ADDITIONAL_PKG_LIBS"
+
+# Generate src/Makevars from template
+sed -e "s|@ADDITIONAL_PKG_LIBS@|${ADDITIONAL_PKG_LIBS}|" src/Makevars.in > src/Makevars
 
 exit 0
