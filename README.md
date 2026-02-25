@@ -1,5 +1,11 @@
 # ravrosr
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/sumalperera/ravrosr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sumalperera/ravrosr/actions/workflows/R-CMD-check.yaml)
+[![lint](https://github.com/sumalperera/ravrosr/actions/workflows/lint.yaml/badge.svg)](https://github.com/sumalperera/ravrosr/actions/workflows/lint.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+<!-- badges: end -->
+
 `ravrosr` brings Avro serialization and Schema Registry support to R, with a Rust backend via [extendr](https://extendr.rs/).
 
 It supports Confluent Schema Registry, Redpanda, and other API-compatible registries.
