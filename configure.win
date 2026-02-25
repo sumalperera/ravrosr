@@ -20,5 +20,6 @@ fi
 
 echo "Using Rust compiler: $RUSTC_BIN"
 echo "Using Cargo: $CARGO_BIN"
+"$RUSTC_BIN" --version
 
 exit 0

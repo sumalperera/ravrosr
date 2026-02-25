@@ -54,6 +54,7 @@ fi
 
 echo "Using Rust compiler: $RUSTC_BIN (version $RUST_VER)"
 echo "Using Cargo: $CARGO_BIN"
+"$RUSTC_BIN" --version
 
 # Detect OS and set platform-specific linker flags
 case "$(uname -s)" in

@@ -1,13 +1,13 @@
 [package]
 name = "ravrosr"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [lib]
 crate-type = ["staticlib"]
 
 [dependencies]
-extendr-api = "0.7"
+extendr-api = "0.8"
 apache-avro = "0.21"
 schema_registry_converter = { version = "4.7", default-features = false, features = ["easy", "avro", "futures", "native_tls"] }
 tokio = { version = "1", features = ["rt-multi-thread"] }

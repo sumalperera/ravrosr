@@ -14,8 +14,7 @@ $(STATLIB):
 		gcc -c gcc_mock.c -o gcc_mock.o && \
 		ar -r libgcc_eh.a gcc_mock.o && \
 		ar -r libgcc_s.a gcc_mock.o
-	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CC)" && \
-		export LIBRARY_PATH="$${LIBRARY_PATH};$(TARGET_DIR)/libgcc_mock" && \
+	export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
 
 C_clean:
