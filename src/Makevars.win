@@ -15,8 +15,13 @@ $(STATLIB):
 		gcc -c gcc_mock.c -o gcc_mock.o && \
 		ar -r libgcc_eh.a gcc_mock.o && \
 		ar -r libgcc_s.a gcc_mock.o
-	export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(TARGET)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
+		cargo build --lib --release --offline --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(TARGET); \
+	else \
+		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
+		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(TARGET); \
+	fi
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)

@@ -22,6 +22,12 @@ echo "Using Rust compiler: $RUSTC_BIN"
 echo "Using Cargo: $CARGO_BIN"
 "$RUSTC_BIN" --version
 
+# Extract vendored Rust dependencies if not already present
+if [ -f src/rust/vendor.tar.xz ] && [ ! -d src/rust/vendor ]; then
+  echo "Extracting vendored Rust dependencies..."
+  tar xf src/rust/vendor.tar.xz -C src/rust
+fi
+
 # Ensure the GNU target is available (Rtools uses MinGW, not MSVC)
 RUSTUP_BIN="$(command -v rustup)"
 if [ -z "$RUSTUP_BIN" ] && [ -f "${USERPROFILE}/.cargo/bin/rustup.exe" ]; then

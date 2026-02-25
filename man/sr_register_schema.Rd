@@ -22,7 +22,8 @@ Register a schema under a subject
 \examples{
 \dontrun{
 client <- sr_connect("http://localhost:8081")
-schema <- '{"type":"record","name":"Test","fields":[{"name":"id","type":"int"}]}'
+schema <- '{"type":"record","name":"Test",
+  "fields":[{"name":"id","type":"int"}]}'
 id <- sr_register_schema(client, "test-value", schema)
 }
 }

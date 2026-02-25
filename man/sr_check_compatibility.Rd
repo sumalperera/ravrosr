@@ -22,7 +22,8 @@ Check compatibility of a schema with a subject
 \examples{
 \dontrun{
 client <- sr_connect("http://localhost:8081")
-schema <- '{"type":"record","name":"Test","fields":[{"name":"id","type":"int"}]}'
+schema <- '{"type":"record","name":"Test",
+  "fields":[{"name":"id","type":"int"}]}'
 is_compat <- sr_check_compatibility(client, "test-value", schema)
 }
 }

@@ -18,10 +18,11 @@ An R list containing the deserialized data
 Deserialize Avro binary data (no registry)
 }
 \examples{
-schema <- '{"type":"record","name":"User","fields":[
-  {"name":"name","type":"string"},
-  {"name":"age","type":"int"}
-]}'
+schema <- paste0(
+  '{"type":"record","name":"User","fields":[',
+  '{"name":"name","type":"string"},',
+  '{"name":"age","type":"int"}]}'
+)
 raw <- avro_serialize_local(schema, list(name = "Alice", age = 30L))
 result <- avro_deserialize_local(schema, raw)
 }

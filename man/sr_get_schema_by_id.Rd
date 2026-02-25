@@ -9,7 +9,8 @@ sr_get_schema_by_id(client, id)
 \arguments{
 \item{client}{A Schema Registry client created with \code{sr_connect}}
 
-\item{id}{The global schema ID (integer, as returned by \code{sr_register_schema})}
+\item{id}{The global schema ID
+(integer, as returned by \code{sr_register_schema})}
 }
 \value{
 A string containing the schema JSON

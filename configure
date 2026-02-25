@@ -71,6 +71,12 @@ esac
 
 echo "Platform: $(uname -s), using additional libs: $ADDITIONAL_PKG_LIBS"
 
+# Extract vendored Rust dependencies if not already present
+if [ -f src/rust/vendor.tar.xz ] && [ ! -d src/rust/vendor ]; then
+  echo "Extracting vendored Rust dependencies..."
+  tar xf src/rust/vendor.tar.xz -C src/rust
+fi
+
 # Generate src/Makevars from template
 sed -e "s|@ADDITIONAL_PKG_LIBS@|${ADDITIONAL_PKG_LIBS}|" src/Makevars.in > src/Makevars
 

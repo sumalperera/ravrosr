@@ -1,0 +1,13 @@
+useDynLib(ravrosr, .registration = TRUE)
+
+export(sr_connect)
+export(sr_list_subjects)
+export(sr_get_schema)
+export(sr_get_schema_by_id)
+export(sr_register_schema)
+export(sr_check_compatibility)
+export(sr_delete_subject)
+export(avro_serialize)
+export(avro_deserialize)
+export(avro_serialize_local)
+export(avro_deserialize_local)

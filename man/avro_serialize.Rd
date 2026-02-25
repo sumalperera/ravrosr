@@ -22,6 +22,8 @@ Serialize R data to Avro with Confluent wire format
 \examples{
 \dontrun{
 client <- sr_connect("http://localhost:8081")
-raw_bytes <- avro_serialize(client, "my-topic-value", list(id = 1L, name = "test"))
+raw_bytes <- avro_serialize(
+  client, "my-topic-value", list(id = 1L, name = "test")
+)
 }
 }
