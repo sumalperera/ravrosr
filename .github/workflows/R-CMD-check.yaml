@@ -30,6 +30,8 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ runner.os == 'Windows' && 'x86_64-pc-windows-gnu' || '' }}
 
       - name: Cache Rust dependencies
         uses: actions/cache@v4
@@ -63,3 +65,4 @@ jobs:
         with:
           upload-snapshots: true
           args: '"--no-manual"'
+          error-on: '"error"'
