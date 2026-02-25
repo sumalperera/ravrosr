@@ -48,7 +48,8 @@ sr_get_schema <- function(client, subject, version = NULL) {
 #' Get schema JSON by global ID
 #'
 #' @param client A Schema Registry client created with \code{sr_connect}
-#' @param id The global schema ID (integer, as returned by \code{sr_register_schema})
+#' @param id The global schema ID
+#'   (integer, as returned by \code{sr_register_schema})
 #' @return A string containing the schema JSON
 #' @examples
 #' \dontrun{
@@ -69,7 +70,8 @@ sr_get_schema_by_id <- function(client, id) {
 #' @examples
 #' \dontrun{
 #' client <- sr_connect("http://localhost:8081")
-#' schema <- '{"type":"record","name":"Test","fields":[{"name":"id","type":"int"}]}'
+#' schema <- '{"type":"record","name":"Test",
+#'   "fields":[{"name":"id","type":"int"}]}'
 #' id <- sr_register_schema(client, "test-value", schema)
 #' }
 #' @export
@@ -86,7 +88,8 @@ sr_register_schema <- function(client, subject, schema_json) {
 #' @examples
 #' \dontrun{
 #' client <- sr_connect("http://localhost:8081")
-#' schema <- '{"type":"record","name":"Test","fields":[{"name":"id","type":"int"}]}'
+#' schema <- '{"type":"record","name":"Test",
+#'   "fields":[{"name":"id","type":"int"}]}'
 #' is_compat <- sr_check_compatibility(client, "test-value", schema)
 #' }
 #' @export
@@ -118,7 +121,9 @@ sr_delete_subject <- function(client, subject) {
 #' @examples
 #' \dontrun{
 #' client <- sr_connect("http://localhost:8081")
-#' raw_bytes <- avro_serialize(client, "my-topic-value", list(id = 1L, name = "test"))
+#' raw_bytes <- avro_serialize(
+#'   client, "my-topic-value", list(id = 1L, name = "test")
+#' )
 #' }
 #' @export
 avro_serialize <- function(client, subject, data) {
@@ -146,10 +151,11 @@ avro_deserialize <- function(client, raw_bytes) {
 #' @param data An R list to serialize
 #' @return A raw vector containing the serialized data
 #' @examples
-#' schema <- '{"type":"record","name":"User","fields":[
-#'   {"name":"name","type":"string"},
-#'   {"name":"age","type":"int"}
-#' ]}'
+#' schema <- paste0(
+#'   '{"type":"record","name":"User","fields":[',
+#'   '{"name":"name","type":"string"},',
+#'   '{"name":"age","type":"int"}]}'
+#' )
 #' raw <- avro_serialize_local(schema, list(name = "Alice", age = 30L))
 #' @export
 avro_serialize_local <- function(schema_json, data) {
@@ -162,10 +168,11 @@ avro_serialize_local <- function(schema_json, data) {
 #' @param raw_bytes A raw vector of Avro data
 #' @return An R list containing the deserialized data
 #' @examples
-#' schema <- '{"type":"record","name":"User","fields":[
-#'   {"name":"name","type":"string"},
-#'   {"name":"age","type":"int"}
-#' ]}'
+#' schema <- paste0(
+#'   '{"type":"record","name":"User","fields":[',
+#'   '{"name":"name","type":"string"},',
+#'   '{"name":"age","type":"int"}]}'
+#' )
 #' raw <- avro_serialize_local(schema, list(name = "Alice", age = 30L))
 #' result <- avro_deserialize_local(schema, raw)
 #' @export

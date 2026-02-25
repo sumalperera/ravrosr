@@ -1,6 +1,7 @@
+TARGET = x86_64-pc-windows-gnu
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/release
-STATLIB = $(LIBDIR)/ravrosr.lib
+LIBDIR = $(TARGET_DIR)/$(TARGET)/release
+STATLIB = $(LIBDIR)/libravrosr.a
 PKG_LIBS = -L$(LIBDIR) -lravrosr -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll -lcrypt32 -lsecur32
 
 all: C_clean
@@ -15,7 +16,7 @@ $(STATLIB):
 		ar -r libgcc_eh.a gcc_mock.o && \
 		ar -r libgcc_s.a gcc_mock.o
 	export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(TARGET)
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
