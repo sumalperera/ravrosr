@@ -77,6 +77,19 @@ if [ -f src/rust/vendor.tar.xz ] && [ ! -d src/rust/vendor ]; then
   tar xf src/rust/vendor.tar.xz -C src/rust
 fi
 
+# Create .cargo/config.toml to point at vendored sources for CRAN (offline) builds
+if [ -d src/rust/vendor ] && [ ! -f src/rust/.cargo/config.toml ]; then
+  mkdir -p src/rust/.cargo
+  cat > src/rust/.cargo/config.toml <<EOF
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"
+EOF
+  echo "Created .cargo/config.toml for vendored dependencies"
+fi
+
 # Generate src/Makevars from template
 sed -e "s|@ADDITIONAL_PKG_LIBS@|${ADDITIONAL_PKG_LIBS}|" src/Makevars.in > src/Makevars
 
