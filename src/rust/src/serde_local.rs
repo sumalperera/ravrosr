@@ -15,8 +15,8 @@ pub fn avro_serialize_local(schema_json: &str, data: Robj) -> Robj {
     writer.append(avro_value).expect("Failed to write Avro value");
     let encoded = writer.into_inner().expect("Failed to flush Avro writer");
 
-    // Return as raw vector via Vec<u8> -> Robj conversion
-    encoded.into_robj()
+    // Return as raw vector
+    Raw::from_bytes(&encoded).into()
 }
 
 /// Deserialize Avro binary to an R list (no registry, no wire format).

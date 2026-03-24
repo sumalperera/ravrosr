@@ -64,7 +64,7 @@ pub fn avro_serialize(client: Robj, subject: &str, data: Robj, version: Nullable
     wire.extend_from_slice(&schema_id.to_be_bytes());
     wire.extend_from_slice(&datum);
 
-    wire.into_robj()
+    Raw::from_bytes(&wire).into()
 }
 
 /// Deserialize Avro binary with Confluent wire format back to R data.
