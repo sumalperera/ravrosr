@@ -71,14 +71,19 @@ esac
 
 echo "Platform: $(uname -s), using additional libs: $ADDITIONAL_PKG_LIBS"
 
+# Remove any stale .cargo/config.toml so we can set it up fresh
+# (it may have been committed to git or left from a previous build)
+rm -f src/rust/.cargo/config.toml
+
 # Extract vendored Rust dependencies if not already present
 if [ -f src/rust/vendor.tar.xz ] && [ ! -d src/rust/vendor ]; then
   echo "Extracting vendored Rust dependencies..."
   tar xf src/rust/vendor.tar.xz -C src/rust
 fi
 
-# Create .cargo/config.toml to point at vendored sources for CRAN (offline) builds
-if [ -d src/rust/vendor ] && [ ! -f src/rust/.cargo/config.toml ]; then
+# Create .cargo/config.toml ONLY when vendor directory exists
+# This allows non-vendored builds to fetch from crates.io
+if [ -d src/rust/vendor ]; then
   mkdir -p src/rust/.cargo
   cat > src/rust/.cargo/config.toml <<EOF
 [source.crates-io]
@@ -88,6 +93,8 @@ replace-with = "vendored-sources"
 directory = "vendor"
 EOF
   echo "Created .cargo/config.toml for vendored dependencies"
+else
+  echo "No vendor directory found, cargo will fetch from crates.io"
 fi
 
 # Generate src/Makevars from template

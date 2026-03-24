@@ -117,6 +117,7 @@ sr_delete_subject <- function(client, subject) {
 #' @param client A Schema Registry client created with \code{sr_connect}
 #' @param subject The subject name (used to look up the schema)
 #' @param data An R list to serialize
+#' @param version The schema version to use (NULL for latest)
 #' @return A raw vector containing the serialized data
 #' @examples
 #' \dontrun{
@@ -124,10 +125,14 @@ sr_delete_subject <- function(client, subject) {
 #' raw_bytes <- avro_serialize(
 #'   client, "my-topic-value", list(id = 1L, name = "test")
 #' )
+#' # Serialize using a specific schema version
+#' raw_bytes <- avro_serialize(
+#'   client, "my-topic-value", list(id = 1L, name = "test"), version = 3
+#' )
 #' }
 #' @export
-avro_serialize <- function(client, subject, data) {
-  .Call(wrap__avro_serialize, client, subject, data)
+avro_serialize <- function(client, subject, data, version = NULL) {
+  .Call(wrap__avro_serialize, client, subject, data, version)
 }
 
 #' Deserialize Avro data with Confluent wire format

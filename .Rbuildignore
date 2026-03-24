@@ -3,6 +3,8 @@
 ^\.idea$
 ^\.claude$
 ^src/rust/target$
+^src/rust/vendor$
+^src/rust/\.cargo$
 ^\.Rproj\.user$
 ^.*\.Rproj$
 ^\.github$

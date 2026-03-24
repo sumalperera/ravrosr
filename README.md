@@ -37,6 +37,13 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
 remotes::install_git("https://github.com/sumalperera/ravrosr")
 ```
 
+If the above fails (e.g. due to offline/CRAN build restrictions), you can install from a local clone:
+
+```bash
+git clone https://github.com/sumalperera/ravrosr /tmp/ravrosr
+NOT_CRAN=true R CMD INSTALL /tmp/ravrosr
+```
+
 ## Quick start
 
 ### 1) Local Avro (no registry)
@@ -94,6 +101,9 @@ client <- sr_connect("http://localhost:8081")
 schema_id <- sr_register_schema(client, "user-value", schema)
 wire_bytes <- avro_serialize(client, "user-value", payload)
 decoded <- avro_deserialize(client, wire_bytes)
+
+# Serialize using a specific schema version
+wire_bytes <- avro_serialize(client, "user-value", payload, version = 1)
 ```
 
 ## Common Schema Registry operations
@@ -129,7 +139,7 @@ sr_delete_subject(client, "user-value")
 | `sr_register_schema(client, subject, schema_json)` | Register schema and return ID |
 | `sr_check_compatibility(client, subject, schema_json)` | Check compatibility |
 | `sr_delete_subject(client, subject)` | Delete subject |
-| `avro_serialize(client, subject, data)` | Serialize using Confluent wire format |
+| `avro_serialize(client, subject, data, version)` | Serialize using Confluent wire format (`NULL` = latest) |
 | `avro_deserialize(client, raw_bytes)` | Deserialize Confluent wire format |
 | `avro_serialize_local(schema_json, data)` | Serialize Avro without registry |
 | `avro_deserialize_local(schema_json, raw_bytes)` | Deserialize Avro without registry |

@@ -9,19 +9,47 @@ use crate::runtime::TOKIO_RT;
 
 /// Serialize R data to Avro binary with Confluent wire format (5-byte header).
 /// The wire format is: magic byte (0x00) + 4-byte schema ID + Avro binary.
+/// If version is specified, fetches that specific schema version instead of latest.
 #[extendr]
-pub fn avro_serialize(client: Robj, subject: &str, data: Robj) -> Robj {
+pub fn avro_serialize(client: Robj, subject: &str, data: Robj, version: Nullable<i32>) -> Robj {
     let ptr: ExternalPtr<SrClient> = client.try_into()
         .expect("Expected a Schema Registry client (created with sr_connect)");
-    let strategy = SubjectNameStrategy::TopicNameStrategy(subject.to_string(), false);
 
-    let schema_result = TOKIO_RT.block_on(async {
-        get_schema_by_subject(&ptr.settings, &strategy).await
-    }).expect("Failed to get schema for subject");
+    let ver = match version {
+        Nullable::NotNull(v) => v as u32,
+        Nullable::Null => 0,
+    };
 
-    let schema_str = &schema_result.schema;
-    let schema_id = schema_result.id;
-    let schema = Schema::parse_str(schema_str)
+    let (schema_str, schema_id) = if ver > 0 {
+        // Fetch specific version via REST API
+        let url = format!("{}/subjects/{}/versions/{}", ptr.base_url, subject, ver);
+        let http_client = reqwest::Client::new();
+        let response = TOKIO_RT.block_on(async {
+            let mut req = http_client.get(&url);
+            if let Some(ref auth) = ptr.auth_header {
+                req = req.header("Authorization", auth);
+            }
+            req.send().await
+                .expect("HTTP request failed")
+                .json::<serde_json::Value>().await
+                .expect("Failed to parse response")
+        });
+        let s = response["schema"].as_str()
+            .expect("No 'schema' field in response")
+            .to_string();
+        let id = response["id"].as_u64()
+            .expect("No 'id' field in response") as u32;
+        (s, id)
+    } else {
+        // Fetch latest via schema_registry_converter
+        let strategy = SubjectNameStrategy::TopicNameStrategy(subject.to_string(), false);
+        let schema_result = TOKIO_RT.block_on(async {
+            get_schema_by_subject(&ptr.settings, &strategy).await
+        }).expect("Failed to get schema for subject");
+        (schema_result.schema, schema_result.id)
+    };
+
+    let schema = Schema::parse_str(&schema_str)
         .expect("Failed to parse schema");
 
     let avro_value = robj_to_avro(&data, &schema)
