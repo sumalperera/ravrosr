@@ -19,14 +19,13 @@ $(STATLIB):
 		mkdir -p ./rust/.cargo && \
 		printf '[source.crates-io]\nreplace-with = "vendored-sources"\n\n[source.vendored-sources]\ndirectory = "vendor"\n' > ./rust/.cargo/config.toml; \
 	fi
-	# In some environments, ~/.cargo/bin might not be included in PATH, so we need
-	# to set it here to ensure cargo can be found.
+	# Build from the rust directory so cargo finds .cargo/config.toml
+	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+	cd ./rust && \
 	if [ "$(NOT_CRAN)" != "true" ]; then \
-		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-		cargo build --lib --release --offline --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR); \
+		cargo build --lib --release --offline --target-dir target; \
 	else \
-		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-		cargo build --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR); \
+		cargo build --lib --release --target-dir target; \
 	fi
 	if [ "$(NOT_CRAN)" != "true" ]; then \
 		rm -Rf $(CARGOTMP) && \
