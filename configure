@@ -56,16 +56,36 @@ echo "Using Rust compiler: $RUSTC_BIN (version $RUST_VER)"
 echo "Using Cargo: $CARGO_BIN"
 "$RUSTC_BIN" --version
 
+# Check for librdkafka (required for Kafka producer)
+PKG_CONFIG_BIN="$(command -v pkg-config)"
+if [ -n "$PKG_CONFIG_BIN" ]; then
+  RDKAFKA_LIBS="$($PKG_CONFIG_BIN --libs rdkafka 2>/dev/null)"
+  if [ -n "$RDKAFKA_LIBS" ]; then
+    echo "Found librdkafka via pkg-config: $RDKAFKA_LIBS"
+  fi
+fi
+
+if [ -z "$RDKAFKA_LIBS" ]; then
+  echo "-----"
+  echo "WARNING: librdkafka not found via pkg-config."
+  echo "Install it for your platform:"
+  echo "  Debian/Ubuntu: sudo apt-get install librdkafka-dev"
+  echo "  macOS:         brew install librdkafka"
+  echo "  RHEL/Fedora:   sudo dnf install librdkafka-devel"
+  echo "-----"
+  RDKAFKA_LIBS="-lrdkafka"
+fi
+
 # Detect OS and set platform-specific linker flags
 case "$(uname -s)" in
   Darwin)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lresolv -framework Security -framework SystemConfiguration"
+    ADDITIONAL_PKG_LIBS="$RDKAFKA_LIBS -lsasl2 -lresolv -framework Security -framework SystemConfiguration"
     ;;
   Linux)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto -lresolv"
+    ADDITIONAL_PKG_LIBS="$RDKAFKA_LIBS -lsasl2 -lssl -lcrypto -lresolv"
     ;;
   *)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto"
+    ADDITIONAL_PKG_LIBS="$RDKAFKA_LIBS -lsasl2 -lssl -lcrypto"
     ;;
 esac
 

@@ -54,7 +54,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libssl-dev libcurl4-openssl-dev libsasl2-dev
+          sudo apt-get install -y libssl-dev libcurl4-openssl-dev libsasl2-dev librdkafka-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

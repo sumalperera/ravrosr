@@ -21,7 +21,10 @@ It supports Confluent Schema Registry, Redpanda, and other API-compatible regist
 
 - R `>= 4.2`
 - [Rust toolchain](https://rust-lang.org/tools/install/) (`rustc >= 1.67`, `cargo`)
-- [CMake](https://cmake.org/) (for building the bundled librdkafka)
+- [librdkafka](https://github.com/confluentinc/librdkafka) development headers:
+  - macOS: `brew install librdkafka`
+  - Debian/Ubuntu: `apt-get install librdkafka-dev libsasl2-dev`
+  - RHEL/Fedora: `dnf install librdkafka-devel`
 - Build tools:
   - macOS uses Xcode Command Line Tools (`xcode-select --install`)
   - Windows uses Rtools
@@ -205,7 +208,7 @@ sr_delete_subject(client, "user-value")
 ## Troubleshooting
 
 - Rust not found during install: confirm `rustc --version` and `cargo --version` work in the same shell used by R.
-- CMake not found: install with `brew install cmake` (macOS) or `apt install cmake` (Linux).
+- librdkafka not found: install with `brew install librdkafka` (macOS) or `apt install librdkafka-dev` (Linux).
 - Build failures on macOS: run `xcode-select --install`.
 - Authentication errors with Confluent Cloud: verify endpoint URL, API key/secret, and network access to the registry endpoint.
 - Kafka producer connection issues: check that `bootstrap.servers`, `security.protocol`, and SASL credentials are correct. The config list is passed directly to [librdkafka](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md).
