@@ -59,13 +59,13 @@ echo "Using Cargo: $CARGO_BIN"
 # Detect OS and set platform-specific linker flags
 case "$(uname -s)" in
   Darwin)
-    ADDITIONAL_PKG_LIBS="-lresolv -framework Security -framework SystemConfiguration"
+    ADDITIONAL_PKG_LIBS="-lsasl2 -lresolv -framework Security -framework SystemConfiguration"
     ;;
   Linux)
-    ADDITIONAL_PKG_LIBS="-lssl -lcrypto -lresolv"
+    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto -lresolv"
     ;;
   *)
-    ADDITIONAL_PKG_LIBS="-lssl -lcrypto"
+    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto"
     ;;
 esac
 

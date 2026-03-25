@@ -184,3 +184,62 @@ avro_serialize_local <- function(schema_json, data) {
 avro_deserialize_local <- function(schema_json, raw_bytes) {
   .Call(wrap__avro_deserialize_local, schema_json, raw_bytes)
 }
+
+#' Create a Kafka producer
+#'
+#' @param config A named list of librdkafka configuration values
+#' @return An external pointer to the producer object
+#' @examples
+#' \dontrun{
+#' producer <- kafka_producer(list(
+#'   "bootstrap.servers" = "localhost:9092"
+#' ))
+#' }
+#' @export
+kafka_producer <- function(config) {
+  .Call(wrap__kafka_producer_new, config)
+}
+
+#' Produce a raw byte message to a Kafka topic
+#'
+#' @param producer A Kafka producer created with \code{kafka_producer}
+#' @param topic The Kafka topic name
+#' @param value A raw vector to send as the message value
+#' @param key An optional character string key
+#' @examples
+#' \dontrun{
+#' raw_bytes <- avro_serialize(client, "my-topic-value", data)
+#' kafka_produce(producer, "my-topic", raw_bytes, key = "my-key")
+#' }
+#' @export
+kafka_produce <- function(producer, topic, value, key = NULL) {
+  .Call(wrap__kafka_produce, producer, topic, value, key)
+}
+
+#' Produce a text message to a Kafka topic
+#'
+#' @param producer A Kafka producer created with \code{kafka_producer}
+#' @param topic The Kafka topic name
+#' @param value A character string to send as the message value
+#' @param key An optional character string key
+#' @examples
+#' \dontrun{
+#' kafka_produce_text(producer, "my-topic", '{"id": 1}', key = "my-key")
+#' }
+#' @export
+kafka_produce_text <- function(producer, topic, value, key = NULL) {
+  .Call(wrap__kafka_produce_text, producer, topic, value, key)
+}
+
+#' Flush the Kafka producer
+#'
+#' @param producer A Kafka producer created with \code{kafka_producer}
+#' @param timeout Timeout in milliseconds (default 5000)
+#' @examples
+#' \dontrun{
+#' kafka_flush(producer, timeout = 5000)
+#' }
+#' @export
+kafka_flush <- function(producer, timeout = 5000L) {
+  .Call(wrap__kafka_flush, producer, as.integer(timeout))
+}

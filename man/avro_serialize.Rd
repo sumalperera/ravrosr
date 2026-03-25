@@ -4,7 +4,7 @@
 \alias{avro_serialize}
 \title{Serialize R data to Avro with Confluent wire format}
 \usage{
-avro_serialize(client, subject, data)
+avro_serialize(client, subject, data, version = NULL)
 }
 \arguments{
 \item{client}{A Schema Registry client created with \code{sr_connect}}
@@ -12,6 +12,8 @@ avro_serialize(client, subject, data)
 \item{subject}{The subject name (used to look up the schema)}
 
 \item{data}{An R list to serialize}
+
+\item{version}{The schema version to use (NULL for latest)}
 }
 \value{
 A raw vector containing the serialized data
@@ -24,6 +26,10 @@ Serialize R data to Avro with Confluent wire format
 client <- sr_connect("http://localhost:8081")
 raw_bytes <- avro_serialize(
   client, "my-topic-value", list(id = 1L, name = "test")
+)
+# Serialize using a specific schema version
+raw_bytes <- avro_serialize(
+  client, "my-topic-value", list(id = 1L, name = "test"), version = 3
 )
 }
 }
