@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-`ravrosr` brings Avro serialization and Schema Registry support to R, with a Rust backend via [extendr](https://extendr.rs/).
+`ravrosr` brings Avro serialization, Schema Registry support, and Kafka producing to R, with a Rust backend via [extendr](https://extendr.rs/).
 
 It supports Confluent Schema Registry, Redpanda, and other API-compatible registries.
 
@@ -15,11 +15,13 @@ It supports Confluent Schema Registry, Redpanda, and other API-compatible regist
 - Serialize and deserialize Avro data locally (no registry required)
 - Serialize and deserialize Confluent wire-format payloads (`0x00 + schema_id + avro`)
 - Connect to Schema Registry and manage subjects/schemas from R
+- Produce messages to Kafka/Redpanda with native raw byte support (Avro, JSON, or text)
 
 ## Requirements
 
 - R `>= 4.2`
 - [Rust toolchain](https://rust-lang.org/tools/install/) (`rustc >= 1.67`, `cargo`)
+- [CMake](https://cmake.org/) (for building the bundled librdkafka)
 - Build tools:
   - macOS uses Xcode Command Line Tools (`xcode-select --install`)
   - Windows uses Rtools
@@ -106,6 +108,39 @@ decoded <- avro_deserialize(client, wire_bytes)
 wire_bytes <- avro_serialize(client, "user-value", payload, version = 1)
 ```
 
+### 3) Kafka/Redpanda producer
+
+```r
+library(ravrosr)
+
+# Connect to schema registry
+client <- sr_connect(
+  url = Sys.getenv("SCHEMA_REGISTRY_ENDPOINT"),
+  api_key = Sys.getenv("REDPANDA_SASL_USERNAME"),
+  api_secret = Sys.getenv("REDPANDA_SASL_PASSWORD")
+)
+
+# Create a Kafka producer (config passed directly to librdkafka)
+producer <- kafka_producer(list(
+  "bootstrap.servers" = Sys.getenv("REDPANDA_BOOTSTRAP_SERVERS"),
+  "security.protocol" = Sys.getenv("REDPANDA_SECURITY_PROTOCOL"),
+  "sasl.mechanism"    = Sys.getenv("REDPANDA_SASL_MECHANISM"),
+  "sasl.username"     = Sys.getenv("REDPANDA_SASL_USERNAME"),
+  "sasl.password"     = Sys.getenv("REDPANDA_SASL_PASSWORD")
+))
+
+# Serialize to Avro and produce raw bytes
+data <- list(name = "Alice", age = 30L)
+raw_bytes <- avro_serialize(client, "my-topic-value", data, version = 1)
+kafka_produce(producer, "my-topic", raw_bytes, key = "my-key")
+
+# Or produce a JSON/text message directly
+kafka_produce_text(producer, "my-topic", '{"hello": "world"}', key = "my-key")
+
+# Flush to ensure delivery
+kafka_flush(producer)
+```
+
 ## Common Schema Registry operations
 
 ```r
@@ -143,6 +178,10 @@ sr_delete_subject(client, "user-value")
 | `avro_deserialize(client, raw_bytes)` | Deserialize Confluent wire format |
 | `avro_serialize_local(schema_json, data)` | Serialize Avro without registry |
 | `avro_deserialize_local(schema_json, raw_bytes)` | Deserialize Avro without registry |
+| `kafka_producer(config)` | Create a Kafka producer |
+| `kafka_produce(producer, topic, value, key)` | Produce a raw byte message |
+| `kafka_produce_text(producer, topic, value, key)` | Produce a text message |
+| `kafka_flush(producer, timeout)` | Flush pending messages |
 
 ## Avro type mapping
 
@@ -166,8 +205,10 @@ sr_delete_subject(client, "user-value")
 ## Troubleshooting
 
 - Rust not found during install: confirm `rustc --version` and `cargo --version` work in the same shell used by R.
+- CMake not found: install with `brew install cmake` (macOS) or `apt install cmake` (Linux).
 - Build failures on macOS: run `xcode-select --install`.
 - Authentication errors with Confluent Cloud: verify endpoint URL, API key/secret, and network access to the registry endpoint.
+- Kafka producer connection issues: check that `bootstrap.servers`, `security.protocol`, and SASL credentials are correct. The config list is passed directly to [librdkafka](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md).
 
 ## License
 
