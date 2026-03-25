@@ -21,11 +21,10 @@ It supports Confluent Schema Registry, Redpanda, and other API-compatible regist
 
 - R `>= 4.2`
 - [Rust toolchain](https://rust-lang.org/tools/install/) (`rustc >= 1.67`, `cargo`)
-- [CMake](https://cmake.org/) (builds librdkafka from source)
-- SSL and SASL development headers:
-  - Debian/Ubuntu: `apt-get install cmake libssl-dev libsasl2-dev`
-  - macOS: included with system (no extra install needed)
-  - RHEL/Fedora: `dnf install cmake openssl-devel cyrus-sasl-devel`
+- [CMake](https://cmake.org/) (builds bundled librdkafka, OpenSSL, and SASL from source)
+  - Debian/Ubuntu: `apt-get install cmake`
+  - macOS: `brew install cmake` or included with Xcode
+  - RHEL/Fedora: `dnf install cmake`
 - Build tools:
   - macOS uses Xcode Command Line Tools (`xcode-select --install`)
   - Windows uses Rtools

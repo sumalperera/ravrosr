@@ -57,16 +57,16 @@ echo "Using Cargo: $CARGO_BIN"
 "$RUSTC_BIN" --version
 
 # Detect OS and set platform-specific linker flags
-# librdkafka is built from source via cmake-build, but needs system SSL and SASL
+# librdkafka, OpenSSL, and SASL are all built from source (vendored)
 case "$(uname -s)" in
   Darwin)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lresolv -framework Security -framework SystemConfiguration"
+    ADDITIONAL_PKG_LIBS="-lresolv -framework Security -framework SystemConfiguration"
     ;;
   Linux)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto -lresolv"
+    ADDITIONAL_PKG_LIBS="-lresolv"
     ;;
   *)
-    ADDITIONAL_PKG_LIBS="-lsasl2 -lssl -lcrypto"
+    ADDITIONAL_PKG_LIBS=""
     ;;
 esac
 
