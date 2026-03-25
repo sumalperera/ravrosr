@@ -179,8 +179,8 @@ sr_delete_subject(client, "user-value")
 | `avro_serialize_local(schema_json, data)` | Serialize Avro without registry |
 | `avro_deserialize_local(schema_json, raw_bytes)` | Deserialize Avro without registry |
 | `kafka_producer(config)` | Create a Kafka producer |
-| `kafka_produce(producer, topic, value, key)` | Produce a raw byte message |
-| `kafka_produce_text(producer, topic, value, key)` | Produce a text message |
+| `kafka_produce(producer, topic, value, key)` | Produce a raw byte message (`value` is a `raw` vector, e.g. from `avro_serialize`) |
+| `kafka_produce_text(producer, topic, value, key)` | Produce a text message (`value` is a `character` string, e.g. JSON) |
 | `kafka_flush(producer, timeout)` | Flush pending messages |
 
 ## Avro type mapping
